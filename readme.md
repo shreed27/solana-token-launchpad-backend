@@ -1,139 +1,110 @@
-# Solana Token Launchpad Backend
+# ⚡️ SOLANA TOKEN LAUNCHPAD // CORE_BACKEND ⚡️
 
-Backend API for managing token launches, whitelist access, tiered pricing, referrals, and vesting schedules.
+```raw
+   _____ ____  __    ___    _   __ ___       
+  / ___// __ \/ /   /   |  / | / //   |      
+  \__ \/ / / / /   / /| | /  |/ // /| |      
+ ___/ / /_/ / /___/ ___ |/ /|  // ___ |      
+/____/\____/_____/_/  |_/_/ |_//_/  |_|      
+                                             
+   __    ___    __  __ _   __ ______ __  __ 
+  / /   /   |  / / / // | / // ____// / / / 
+ / /   / /| | / / / //  |/ // /    / /_/ /  
+/ /___/ ___ |/ /_/ // /|  // /___ / __  /   
+/_____/_/  |_|\____//_/ |_/ \____//_/ /_/    
+                                             
+>> STATUS: [ONLINE] // ENCRYPTION: [AES-256] 
+>> VERSION: 1.0.0 // PROTOCOL: SOL-RPC-X
+```
 
-## Overview
+---
 
-This project implements the backend for a token launchpad platform built on Solana. It esposes a REST API that allows users to register, create token launches, manage whitelists, 
-and purchase tokens with tiered pricing.
+## 🟢 SYSTEM_OVERVIEW
+A high-performance, **asynchronous** backend engine engineered for the Solana ecosystem. This matrix handles token launches, **tiered pricing matrices**, referral loops, and **linear vesting schedules** with atomic precision.
 
-The system also supports referral codes, vesting schedules, and sybil protection to ensure purchase limits are enforced per user rather than per wallet.
+### 🧬 TECH_STACK
+- **CORE**: `Node.js` // `TypeScript`
+- **ENGINE**: `Express.js`
+- **PERSISTENCE**: `PostgreSQL` // `Prisma ORM`
+- **SEC_LAYER**: `JWT` // `Bcrypt`
+- **NETWORK**: `Solana Web3.js` (Ready)
 
-The backend is built with Express and Prisma, using PostgreSQL as the database.
+---
 
-## Tech Stack
-
-- Node.js
-- Express.js
-- TypeScript
-- PostgreSQL
-- Prisma ORM
-- JWT Authentication
-- bcryptjs
-
-## Architecture
-
-The API follows a modular route-based structure.
-
+## 🛠️ ARCHITECTURE_GRID
+```text
 src/
-  routes/
-  middleware/
-  db.ts
-  index.ts
+ ┣━ routes/        # [SIGNAL_HANDLERS] API Endpoints
+ ┣━ middleware/    # [TRAFFIC_CONTROL] Security & Validation
+ ┣━ db.ts          # [DATA_NEXUS] Prisma Client
+ ┗━ index.ts       # [MAINFRAME] System Entry
+```
 
-Routes handle request validation and responses, while Prisma manages database access.
+---
 
-Authentication is implemented using JWT tokens passed in the Authorization header.
+## 🛰️ PROTOCOLS [API_ENDPOINTS]
 
-## Database Models
+| METHOD | SIGNAL_PATH | DESCRIPTION | ACCESS |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/health` | System diagnostics | `PUBLIC` |
+| `POST` | `/api/auth/register` | Identity generation | `PUBLIC` |
+| `POST` | `/api/auth/login` | Nexus access token | `PUBLIC` |
+| `POST` | `/api/launches` | Protocol deployment | `USER` |
+| `GET` | `/api/launches/:id` | Query deployment | `PUBLIC` |
+| `POST` | `/api/launches/:id/purchase` | **COMMERCE_PROTOCOL** | `WHITELISTED` |
 
-User:
-Stores account credentials and created launches.
+---
 
-Launch: 
-Represents a token launch event with supply, price, and timing.
+## ⚡ CRYPTO_LOGIC & ENFORCEMENT
 
-Tier: 
-Optional tiered pricing configuration.
+### 🛡️ SYBIL_PROTECTION
+Limits are tied to **UUIDs**, not just wallet hotkeys. Multiple wallets linked to one user cannot bypass the **HARD_CAP**.
 
-Whitelist:
-Addresses allowed to participate in restricted launches.
+### ☢️ ATOMIC_TRANSACTIONS
+All purchases utilize **PRISMA_TRANSACTION** wraps. 
+- `supply_check` -> `price_calc` -> `limit_verify` -> `commit`.
+*Zero overselling. Zero race conditions.*
 
-Referral:
-Referral codes that provide purchase discounts.
+### ⏳ VESTING_ORBIT
+Sub-linear vesting schedules with **CLIFF_DATES** and **TGE_UNLOCKS** enforced at the database layer.
 
-Purchase:
-Tracks token purchases and transaction signatures.
+---
 
-Vesting:
-Defines cliff and vesting schedule for purchased tokens.
+## 🚀 BOOT_SEQUENCE
 
-## API Endpoints
+1. **PROVISION_DEPENDENCIES**:
+   ```bash
+   npm install
+   ```
 
-| Method | Endpoint | Description |
-|------|------|------|
-| GET | /api/health | Health check |
-| POST | /api/auth/register | Register user |
-| POST | /api/auth/login | Login |
-| POST | /api/launches | Create launch |
-| GET | /api/launches | List launches |
-| GET | /api/launches/:id | Get launch |
-| POST | /api/launches/:id/purchase | Purchase tokens |
-| GET | /api/launches/:id/vesting | Get vesting schedule |
+2. **RELIQUARY_SYNC (Env Setup)**:
+   Create `.env` using `.env.example`.
+   ```bash
+   DATABASE_URL="postgresql://..."
+   JWT_SECRET="CORE_SYSTEM_KEY"
+   ```
 
-## Running Locally
+3. **LITE_DATABASE_INIT**:
+   ```bash
+   npx prisma generate && npx prisma db push
+   ```
 
-Install dependencies:
+4. **START_ENGINE**:
+   ```bash
+   npm start
+   ```
 
-npm install
+---
 
-Create environment file:
+## 🌌 FUTURE_CYBER_PLANS
+- [ ] On-chain transaction verification via `Connection.nConfirmations`.
+- [ ] Direct SPL-Token minting triggers.
+- [ ] Dynamic Tier re-balancing via machine learning.
+- [ ] Real-time Websocket price feeds.
 
-.env
+---
 
-Example:
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/launchpad"
-JWT_SECRET="supersecretkey"
-
-Start the server:
-
-npx prisma generate
-npx prisma db push
-npm start
-
-Server run on: http://localhost:3000
-
-## Example Request
-
-Register a user:
-
-curl -X POST http://localhost:3000/api/auth/register \
--H "Content-Type: application/json" \
--d '{"email":"test@test.com","password":"pass123","name":"Alice"}'
-
-## Design Decisions
-
-Sybil Protection:
-Purchase limits are enforced per user rather than per wallet address.
-
-Atomic Purchases:
-Token purchases run inside a Prisma transaction to prevent race conditions.
-
-Computed Launch Status:
-Launch status is calculated dynamically based on time and purchased supply.
-
-## Edge Cases Handled
-
-- Purchases rejected before launch start
-- Total supply overflow prevention
-- Duplicate transaction signatures
-- Referral code exhaustion
-- Tier pricing overflow handling
-
-### Concurrency Safety
-
-Token purchases run inside a Prisma transaction to prevent race conditions.
-
-This ensures:
-- Total supply cannot be oversold
-- maxPerWallet cannot be bypassed
-- referral usage counts remain accurate
-
-## Future Improvements
-
-- Integrate on-chain Solana transaction verification
-- Add admin dashboard
-- Rate limiting for API endpoints
-- Caching for launch listings
-
-Tested locally on macOS with Node.js v25 and PostgreSQL 16.
+```text
+// END_OF_TRANSMISSION
+// DESIGNED BY SHREED27 // 2026 // SOLANA_NEXUS
+```
